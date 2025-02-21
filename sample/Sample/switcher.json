@@ -1,0 +1,18 @@
+{
+  "solution": "Sample.sln",
+  "solutionFolder": null,
+  "mappings": {
+    "OPCFoundation.NetStandard.Opc.Ua": [
+      "../UA-.NETStandard/Stack/Opc.Ua.Core/Opc.Ua.Core.csproj",
+      "../UA-.NETStandard/Stack/Opc.Ua.Bindings.Https/Opc.Ua.Bindings.Https.csproj",
+      "../UA-.NETStandard/Libraries/Opc.Ua.Security.Certificates/Opc.Ua.Security.Certificates.csproj",
+      "../UA-.NETStandard/Libraries/Opc.Ua.Configuration/Opc.Ua.Configuration.csproj",
+      "../UA-.NETStandard/Libraries/Opc.Ua.Client/Opc.Ua.Client.csproj",
+      "../UA-.NETStandard/Libraries/Opc.Ua.Server/Opc.Ua.Server.csproj",
+      "../UA-.NETStandard/Libraries/Opc.Ua.Gds.Client.Common/Opc.Ua.Gds.Client.Common.csproj",
+      "../UA-.NETStandard/Libraries/Opc.Ua.Gds.Server.Common/Opc.Ua.Gds.Server.Common.csproj"
+    ],
+    "OPCFoundation.NetStandard.Opc.Ua.Core": "../UA-.NETStandard/Stack/Opc.Ua.Core/Opc.Ua.Core.csproj"
+  },
+  "removeProjects": true
+}
