@@ -57,7 +57,10 @@ namespace Dnt.Commands.Packages
                     {
                         using (var projectInformation = ProjectExtensions.LoadProject(solutionProject.AbsolutePath, globalProperties))
                         {
-                            foreach (var mapping in configuration.Mappings)
+                            var mappingsByMostSelective = configuration.Mappings
+                                .OrderBy(x => x.Value.Count);
+                            
+                            foreach (var mapping in mappingsByMostSelective)
                             {
                                 var projectPaths = mapping.Value.Select(p => configuration.GetActualPath(p)).ToList();
                                 var packageName = mapping.Key;
@@ -138,11 +141,14 @@ namespace Dnt.Commands.Packages
 
                     foreach (var item in matchingProjectReferences)
                     {
-                        project.RemoveItem(item);
-
                         var packageVersion = GetPackageVersion(restoreProjectInformation, switchedPackageName);
-                        AddPackage(configuration, solutionProject, project, switchedPackageName, packageVersion);
+                        if (!TryAddPackage(configuration, solutionProject, project, switchedPackageName, packageVersion))
+                        {
+                            continue;
+                        }
 
+                        project.RemoveItem(item);
+                        
                         switchedProjects.Add((solutionProject.AbsolutePath, packageVersion));
                         count++;
                     }
@@ -157,7 +163,7 @@ namespace Dnt.Commands.Packages
             return switchedProjects;
         }
 
-        private static void AddPackage(ReferenceSwitcherConfiguration configuration, ProjectInSolution solutionProject, Project project, string packageName, string packageVersion)
+        private static bool TryAddPackage(ReferenceSwitcherConfiguration configuration, ProjectInSolution solutionProject, Project project, string packageName, string packageVersion)
         {
             var projectName =
                 Path.GetFileNameWithoutExtension(solutionProject.AbsolutePath);
@@ -170,7 +176,11 @@ namespace Dnt.Commands.Packages
             if (switchedProject != null)
             {
                 var reference = switchedProject.GetSwitchedPackage(packageName);
-
+                if (reference == null)
+                {
+                    return false;
+                }
+                
                 if (!string.IsNullOrEmpty(reference.Include))
                 {
                     project.AddItem("Reference", reference.Include, reference.Metadata);
@@ -190,8 +200,9 @@ namespace Dnt.Commands.Packages
                         });
                     }
                 }
-
             }
+            
+            return true;
         }
 
         private static string GetPackageVersion(RestoreProjectInformation restoreProjectInformation, string packageName)
